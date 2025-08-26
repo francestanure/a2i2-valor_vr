@@ -1,52 +1,27 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Planilha</title>
-    <style>
-        body {
-            background-color: #053371;
-            color: white;
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
-        }
-        h1 {
-            font-size: 2em;
-        }
-        form {
-            margin-top: 20px;
-        }
-        .btn {
-            background-color: transparent;
-            color: white;
-            border: 2px solid white;
-            padding: 10px 20px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-        .btn:hover {
-            background-color: white;
-            color: #053371;
-        }
-    </style>
-</head>
-<body>
+<button id="gerar">Gerar planilha</button>
+<script>
+const WEBHOOK_URL = "https://n8n-service-to7f.onrender.com:5678/webhook/start";
+const API_KEY = "SEU_TOKEN_SEGURO"; // o mesmo do Webhook (Header Auth)
 
-    <h1>Olá, que bom ter você aqui!</h1>
-    
-    <form action="https://n8n-service-to7f.onrender.com:5678/webhook-test/40122a6d-26f2-4611-b949-abb0cff763e5" method="post">
-        <button type="submit" class="btn">Gerar planilha com valores VR</button>
-    </form>
+// Exemplo de payload que seu fluxo já entende:
+const payload = {
+  params: { turma: "A", mes: "2025-08" },
+  // ... o que quiser passar
+};
 
-</body>
-</html>
+document.getElementById('gerar').addEventListener('click', async () => {
+  const res = await fetch(WEBHOOK_URL, {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': API_KEY
+    },
+    body: JSON.stringify(payload)
+  });
+  // No final do fluxo você retornará HTML. Você pode abrir em nova aba:
+  const html = await res.text();
+  const blob = new Blob([html], { type: 'text/html' });
+  window.open(URL.createObjectURL(blob), '_blank');
+});
+</script>
