@@ -1,1 +1,83 @@
-const WEBHOOK_URL = "https://n8n-service-to7f.onrender.com/webhook/start"; // sem :5678
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title>A2I2 – Geração de Planilha</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root { --bg:#0E1F37; --fg:#fff; }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; background: var(--bg); color: var(--fg);
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      display: grid; place-items: center;
+    }
+    main { text-align: center; padding: 32px 28px; }
+    h1 { margin: 0 0 16px; font-size: 1.6rem; font-weight: 700; }
+    #gerar {
+      appearance: none; border: 2px solid #fff; background: transparent; color: #fff;
+      padding: 12px 20px; border-radius: 10px; font-weight: 600; cursor: pointer;
+    }
+    #gerar:hover { background: rgba(255,255,255,.1); }
+    #gerar:disabled { opacity: .6; cursor: not-allowed; }
+    #status { margin-top: 12px; font-size: .9rem; opacity: .85; display: none; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Olá! Que bom ter você aqui!</h1>
+    <button id="gerar">Gerar planilha</button>
+    <div id="status">Gerando…</div>
+  </main>
+
+  <script>
+    // Use AQUI a URL de PRODUÇÃO que aparece no seu node Webhook.
+    // Exemplo com o UUID que você me passou:
+    // const WEBHOOK_URL = "https://n8n-service-to7f.onrender.com/webhook/40122a6d-26f2-4611-b949-abb0cff763e5";
+    // Se você trocou o path para "a2i2/start" (ou "start"), copie exatamente a Production URL do n8n.
+    const WEBHOOK_URL = "https://n8n-service-to7f.onrender.com/webhook/start";
+
+    const btn = document.getElementById('gerar');
+    const statusEl = document.getElementById('status');
+
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      statusEl.style.display = 'block';
+      try {
+        // FormData → sem headers → evita preflight CORS
+        const fd = new FormData();
+        fd.append('payload', JSON.stringify({ turma: "A", mes: "2025-08" })); // ajuste conforme seu fluxo
+
+        const res = await fetch(WEBHOOK_URL, { method: 'POST', body: fd });
+        if (!res.ok) throw new Error('Falha ao gerar: ' + res.status);
+
+        const ct = (res.headers.get('Content-Type') || '').toLowerCase();
+
+        if (ct.includes('spreadsheetml') || ct.includes('application/octet-stream')) {
+          // Excel (.xlsx)
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'relatorio-vr.xlsx';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        } else {
+          // HTML
+          const html = await res.text();
+          const blob = new Blob([html], { type: 'text/html' });
+          window.open(URL.createObjectURL(blob), '_blank');
+        }
+      } catch (err) {
+        alert('Erro: ' + (err.message || err));
+      } finally {
+        btn.disabled = false;
+        statusEl.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
