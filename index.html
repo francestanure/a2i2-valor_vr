@@ -1,15 +1,4 @@
-<script>
-document.getElementById('gerar').addEventListener('click', async () => {
-  const fd = new FormData();
-  fd.append('payload', JSON.stringify({ turma: "A", mes: "2025-08" }));
-
-  const res = await fetch(
-    "https://n8n-service-to7f.onrender.com/webhook/start",
-    { method: 'POST', body: fd }
-  );
-
-  const html = await res.text();
-  const blob = new Blob([html], { type: 'text/html' });
-  window.open(URL.createObjectURL(blob), '_blank');
-});
-</script>
+const res = await fetch(
+  "https://n8n-service-to7f.onrender.com/webhook/start",
+  { method: 'POST', body: fd }
+);
