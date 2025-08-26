@@ -11,7 +11,7 @@
     body {
       margin: 0; background: var(--bg); color: var(--fg);
       font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      display: grid; place-items: center;
+      display: grid; 
     }
     main { text-align: center; padding: 32px 28px; }
     h1 { margin: 0 0 16px; font-size: 1.6rem; font-weight: 700; }
@@ -26,7 +26,12 @@
 </head>
 <body>
   <main>
-    <h1>Olá! Que bom ter você aqui!</h1>
+    <br><br>
+    <br><br>
+    <br><br>
+    
+    <h1>Olá! <br> Que bom ter você <br> aqui na GAIA!</h1>
+    <br>
     <button id="gerar">Vamos cálcular os VRs?</button>
     <div id="status">Gerando…</div>
   </main>
@@ -36,7 +41,7 @@
     // Exemplo com o UUID que você me passou:
     // const WEBHOOK_URL = "https://n8n-service-to7f.onrender.com/webhook/40122a6d-26f2-4611-b949-abb0cff763e5";
     // Se você trocou o path para "a2i2/start" (ou "start"), copie exatamente a Production URL do n8n.
-    const WEBHOOK_URL = "https://n8n-service-to7f.onrender.com:5678/webhook/start";
+    const WEBHOOK_URL = "https://n8n-service-to7f.onrender.com/webhook/start";
 
     const btn = document.getElementById('gerar');
     const statusEl = document.getElementById('status');
